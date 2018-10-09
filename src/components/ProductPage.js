@@ -75,8 +75,14 @@ class ProductPage extends Component {
       lineItem => lineItem.productId === productId
     );
 
-    if (productsLineItem.quantity <= 1) {
+
+    if(!productsLineItem){
+      return
+    }
+
+    if (productsLineItem.quantity === 1) {
       this.props.destroyLineItem(productsLineItem);
+
     } else {
       productsLineItem.quantity -= 1;
       this.props.updateLineItem(productsLineItem);
