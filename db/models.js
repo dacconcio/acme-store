@@ -1,5 +1,4 @@
 const Sequalize = require('sequelize');
-
 const db = new Sequalize(process.env.DATABASE_URL);
 
 const Product = db.define('product', {

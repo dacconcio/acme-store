@@ -9,8 +9,7 @@ import {
 import ProductPage from './components/ProductPage.js';
 import { Route, HashRouter } from 'react-router-dom';
 import Orders from './components/Orders.js';
-import Nav from './components/Nav.js'
-
+import Nav from './components/Nav.js';
 
 const mapDispatchToProps = dispatch => {
   return {
@@ -34,7 +33,7 @@ class App extends Component {
     return (
       <HashRouter>
         <div>
-          <Route path='/' component={Nav} />
+          <Route path="/" component={Nav} />
           <Route exact path="/" component={ProductPage} />
           <Route exact path="/orders" component={Orders} />
         </div>
