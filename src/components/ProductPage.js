@@ -4,7 +4,8 @@ import {
   getCreateOrders,
   destroyLineItem,
   updateLineItem,
-  createLineItem
+  createLineItem,
+  updateOrder
 } from '../store.js';
 
 const mapDispatchToProps = dispatch => {
@@ -13,7 +14,8 @@ const mapDispatchToProps = dispatch => {
       dispatch(createLineItem(lineItem, orderId)),
     updateLineItem: lineItem => dispatch(updateLineItem(lineItem)),
     destroyLineItem: lineItem => dispatch(destroyLineItem(lineItem)),
-    getCreateOrders: () => dispatch(getCreateOrders())
+    getCreateOrders: () => dispatch(getCreateOrders()),
+    updateOrder: order => dispatch(updateOrder(order))
   };
 };
 
@@ -36,14 +38,25 @@ class ProductPage extends Component {
     this.createOrder = this.createOrder.bind(this);
   }
 
+  componentDidUpdate() {
+    if (this.props.currentOrder) {
+      console.log(this.props.currentOrder.id);
+    }
+  }
+
   createOrder() {
-    this.props.getCreateOrders();
+    const updatedOrder = this.props.currentOrder;
+    updatedOrder.status = 'ORDER';
+    this.props.updateOrder(updatedOrder);
   }
 
   incrementProduct(productId) {
-    let productsLineItem = this.props.lineItems.find(
-      lineItem => lineItem.productId === productId
-    );
+    const productsLineItem = this.props.lineItems.find(lineItem => {
+      return (
+        lineItem.productId === productId &&
+        lineItem.orderId === this.props.currentOrder.id
+      );
+    });
 
     if (!productsLineItem) {
       this.props.createLineItem({
@@ -58,7 +71,7 @@ class ProductPage extends Component {
   }
 
   decrementProduct(productId) {
-    let productsLineItem = this.props.lineItems.find(
+    const productsLineItem = this.props.lineItems.find(
       lineItem => lineItem.productId === productId
     );
 
@@ -76,19 +89,28 @@ class ProductPage extends Component {
         {this.props.products.map(product => {
           return (
             <div key={product.id}>
-              {this.props.lineItems.find(
-                lineItem => lineItem.productId === product.id
-              )
-                ? this.props.lineItems.find(
-                    lineItem => lineItem.productId === product.id
-                  ).quantity + '   '
+              {this.props.currentOrder &&
+              this.props.lineItems.find(lineItem => {
+                return (
+                  lineItem.productId === product.id &&
+                  lineItem.orderId === this.props.currentOrder.id
+                );
+              })
+                ? this.props.lineItems.find(lineItem => {
+                    return (
+                      lineItem.productId === product.id &&
+                      lineItem.orderId === this.props.currentOrder.id
+                    );
+                  }).quantity + '   '
                 : 0 + '   '}
 
-              {product.name}
+              {product.name + '   '}
+
               <button onClick={() => this.incrementProduct(product.id)}>
                 {' '}
                 + 1{' '}
               </button>
+
               <button onClick={() => this.decrementProduct(product.id)}>
                 {' '}
                 - 1{' '}

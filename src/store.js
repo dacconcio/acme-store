@@ -10,6 +10,26 @@ const CREATE_LINE_ITEM = 'CREATE_LINE_ITEM';
 const UPDATE_LINE_ITEM = 'UPDATE_LINE_ITEM';
 const DESTROY_LINE_ITEM = 'DESTROY_LINE_ITEM';
 
+const UPDATE_ORDER = 'UPDATE_ORDER';
+
+const updateOrderOnState = order => {
+  return {
+    type: UPDATE_ORDER,
+    order
+  };
+};
+
+export const updateOrder = order => {
+  return dispatch => {
+    axios
+      .put(`api/orders/${order.id}`, order)
+      .then(response => dispatch(updateOrderOnState(response.data)))
+      .then(() => dispatch(getCreateOrders()))
+      .catch(err => console.log(err))
+
+  };
+};
+
 const destroyLineItemOnState = lineItem => {
   return {
     type: DESTROY_LINE_ITEM,
@@ -98,6 +118,15 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
+    case UPDATE_ORDER:
+      const updatedOrders = [...state.orders].filter(
+        order => order.id !== action.order.id
+      );
+
+      updatedOrders.push(action.order);
+
+      return Object.assign({}, state, { orders: updatedOrders });
+
     case DESTROY_LINE_ITEM:
       const updatedLineItemsDestroy = [...state.lineItems].filter(
         lineItem => lineItem.id !== action.lineItem.id

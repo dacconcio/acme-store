@@ -7,6 +7,10 @@ import {
   store
 } from './store.js';
 import ProductPage from './components/ProductPage.js';
+import { Route, HashRouter } from 'react-router-dom';
+import Orders from './components/Orders.js';
+import Nav from './components/Nav.js'
+
 
 const mapDispatchToProps = dispatch => {
   return {
@@ -27,7 +31,15 @@ class App extends Component {
   }
 
   render() {
-    return <ProductPage />;
+    return (
+      <HashRouter>
+        <div>
+          <Route path='/' component={Nav} />
+          <Route exact path="/" component={ProductPage} />
+          <Route exact path="/orders" component={Orders} />
+        </div>
+      </HashRouter>
+    );
   }
 }
 
