@@ -11,8 +11,6 @@ const mapStateToProps = state => {
 };
 
 const Orders = props => {
-  console.log('lala');
-
   return (
     <div>
       {props.orders.map(order => {
