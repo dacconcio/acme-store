@@ -42,7 +42,7 @@ class Login extends Component {
 
   login(event) {
     event.preventDefault();
-    this.props.login(this.state);
+    this.props.login(this.state)
   }
 
   logout(event) {

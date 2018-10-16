@@ -18,7 +18,7 @@ const setAuth = auth => {
   return {
     type: SET_AUTH,
     auth
-  }
+  };
 };
 
 const exchangeTokenForAuth = history => {
@@ -167,7 +167,6 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-
     case SET_AUTH:
       return Object.assign({}, state, { auth: action.auth });
 

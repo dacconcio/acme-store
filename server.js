@@ -3,9 +3,7 @@ const Express = require('express');
 const app = new Express();
 const path = require('path');
 const bodyParser = require('body-parser');
-const jwt = require('jwt-simple')
-
-
+const jwt = require('jwt-simple');
 
 app.use(bodyParser.json());
 app.use('/dist', Express.static(path.join(__dirname, 'dist')));
@@ -13,7 +11,6 @@ app.use('/dist', Express.static(path.join(__dirname, 'dist')));
 app.get('/', (req, res, next) => {
   res.sendFile(path.join(__dirname, 'dist/index.html'));
 });
-
 
 app.use((req, res, next) => {
   const token = req.headers.authorization;

@@ -1,53 +1,10 @@
 const Sequalize = require('sequelize');
 const db = new Sequalize(process.env.DATABASE_URL);
 
-const User = db.define('user', {
-  name: {
-    type: db.Sequelize.STRING,
-    allowNull: false,
-    validate: {
-      notEmpty: true
-    }
-  },
-  password: {
-    type: db.Sequelize.STRING,
-    allowNull: false,
-    validate: {
-      notEmpty: true
-    }
-  }
-});
-
-const Product = db.define('product', {
-  name: {
-    type: db.Sequelize.STRING,
-    allowNull: false,
-    unique: true,
-    validate: {
-      notEmpty: true
-    }
-  }
-});
-
-const Order = db.define('order', {
-  id: {
-    type: db.Sequelize.UUID,
-    defaultValue: db.Sequelize.UUIDV4,
-    primaryKey: true
-  },
-  status: {
-    type: db.Sequelize.ENUM('CART', 'ORDER'),
-    allowNull: false,
-    defaultValue: 'CART'
-  }
-});
-
-const LineItem = db.define('lineItem', {
-  quantity: {
-    type: db.Sequelize.INTEGER,
-    defaultValue: 1
-  }
-});
+const User = require('./User.js')(db)
+const Product = require('./Product.js')(db)
+const Order = require('./Order.js')(db)
+const LineItem = require('./LineItem.js')(db)
 
 LineItem.belongsTo(Product);
 LineItem.belongsTo(Order);
