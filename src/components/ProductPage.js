@@ -8,6 +8,8 @@ import {
   updateOrder
 } from '../store.js';
 
+import { Elevation, Card, Button, ButtonGroup } from '@blueprintjs/core';
+
 const mapDispatchToProps = dispatch => {
   return {
     createLineItem: (lineItem, orderId) =>
@@ -71,18 +73,19 @@ class ProductPage extends Component {
   }
 
   decrementProduct(productId) {
-    const productsLineItem = this.props.lineItems.find(
-      lineItem => lineItem.productId === productId
-    );
+   const productsLineItem = this.props.lineItems.find(lineItem => {
+      return (
+        lineItem.productId === productId &&
+        lineItem.orderId === this.props.currentOrder.id
+      );
+    });
 
-
-    if(!productsLineItem){
-      return
+    if (!productsLineItem) {
+      return;
     }
 
     if (productsLineItem.quantity === 1) {
       this.props.destroyLineItem(productsLineItem);
-
     } else {
       productsLineItem.quantity -= 1;
       this.props.updateLineItem(productsLineItem);
@@ -91,44 +94,49 @@ class ProductPage extends Component {
 
   render() {
     return (
-      <div>
-        {this.props.products.map(product => {
-          return (
-            <div key={product.id}>
-              {this.props.currentOrder &&
-              this.props.lineItems.find(lineItem => {
-                return (
-                  lineItem.productId === product.id &&
-                  lineItem.orderId === this.props.currentOrder.id
-                );
-              })
-                ? this.props.lineItems.find(lineItem => {
-                    return (
-                      lineItem.productId === product.id &&
-                      lineItem.orderId === this.props.currentOrder.id
-                    );
-                  }).quantity + '   '
-                : 0 + '   '}
+      <div align="center">
+        <div align="center" className="bp3-callout bp3-intent-primary">
+          <h4 className="bp3-heading">Shopping Cart</h4>
+          <br />
+          {this.props.products.map(product => {
+            return (
+              <div key={product.id}>
+                {this.props.currentOrder &&
+                this.props.lineItems.find(lineItem => {
+                  return (
+                    lineItem.productId === product.id &&
+                    lineItem.orderId === this.props.currentOrder.id
+                  );
+                })
+                  ? this.props.lineItems.find(lineItem => {
+                      return (
+                        lineItem.productId === product.id &&
+                        lineItem.orderId === this.props.currentOrder.id
+                      );
+                    }).quantity + '   '
+                  : 0 + '   '}
 
-              {product.name + '   '}
+                {product.name + '   '}
 
-              <button onClick={() => this.incrementProduct(product.id)}>
-                {' '}
-                + 1{' '}
-              </button>
+                <ButtonGroup>
+                  <Button onClick={() => this.incrementProduct(product.id)}>
+                    {' '}
+                    + 1{' '}
+                  </Button>
 
-              <button onClick={() => this.decrementProduct(product.id)}>
-                {' '}
-                - 1{' '}
-              </button>
-            </div>
-          );
-        })}
+                  <Button onClick={() => this.decrementProduct(product.id)}>
+                    {' '}
+                    - 1{' '}
+                  </Button>
+                </ButtonGroup>
+              </div>
+            );
+          })}
 
-        <br />
-        <br />
+          <br />
 
-        <button onClick={this.createOrder}> CREATE ORDER </button>
+          <Button onClick={this.createOrder}> CREATE ORDER </Button>
+        </div>
       </div>
     );
   }

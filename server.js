@@ -1,14 +1,59 @@
-const {Product, Order, LineItem} = require('./db/models.js')
+const { User, Product, Order, LineItem } = require('./db/models.js');
 const Express = require('express');
 const app = new Express();
 const path = require('path');
 const bodyParser = require('body-parser');
+const jwt = require('jwt-simple')
+
+
 
 app.use(bodyParser.json());
 app.use('/dist', Express.static(path.join(__dirname, 'dist')));
 
 app.get('/', (req, res, next) => {
   res.sendFile(path.join(__dirname, 'dist/index.html'));
+});
+
+
+app.use((req, res, next) => {
+  const token = req.headers.authorization;
+  if (!token) {
+    return next();
+  }
+  let id;
+  try {
+    id = jwt.decode(token, process.env.JWT_SECRET).id;
+  } catch (ex) {
+    return next({ status: 401 });
+  }
+  User.findById(id)
+    .then(user => {
+      req.user = user;
+      next();
+    })
+    .catch(next);
+});
+
+app.post('/api/auth', (req, res, next) => {
+  const { name, password } = req.body;
+  User.findOne({
+    where: { name, password }
+  })
+    .then(user => {
+      if (!user) {
+        return next({ status: 401 });
+      }
+      const token = jwt.encode({ id: user.id }, process.env.JWT_SECRET);
+      res.send({ token });
+    })
+    .catch(next);
+});
+
+app.get('/api/auth', (req, res, next) => {
+  if (!req.user) {
+    return next({ status: 401 });
+  }
+  res.send(req.user);
 });
 
 app.get('/api/products', (req, res, next) => {

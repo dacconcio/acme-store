@@ -12,6 +12,55 @@ const DESTROY_LINE_ITEM = 'DESTROY_LINE_ITEM';
 
 const UPDATE_ORDER = 'UPDATE_ORDER';
 
+const SET_AUTH = 'SET_AUTH';
+
+const setAuth = auth => {
+  return {
+    type: SET_AUTH,
+    auth
+  }
+};
+
+const exchangeTokenForAuth = history => {
+  return dispatch => {
+    const token = window.localStorage.getItem('token');
+    if (!token) {
+      return;
+    }
+    return axios
+      .get('/api/auth', {
+        headers: {
+          authorization: token
+        }
+      })
+      .then(response => response.data)
+      .then(auth => {
+        dispatch(setAuth(auth));
+        if (history) {
+          history.push('/users');
+        }
+      })
+      .catch(ex => window.localStorage.removeItem('token'));
+  };
+};
+
+export const logout = () => {
+  window.localStorage.removeItem('token');
+  return setAuth({});
+};
+
+export const login = (credentials, history) => {
+  return dispatch => {
+    return axios
+      .post('/api/auth', credentials)
+      .then(response => response.data)
+      .then(data => {
+        window.localStorage.setItem('token', data.token);
+        dispatch(exchangeTokenForAuth(history));
+      });
+  };
+};
+
 const updateOrderOnState = order => {
   return {
     type: UPDATE_ORDER,
@@ -25,8 +74,7 @@ export const updateOrder = order => {
       .put(`api/orders/${order.id}`, order)
       .then(response => dispatch(updateOrderOnState(response.data)))
       .then(() => dispatch(getCreateOrders()))
-      .catch(err => console.log(err))
-
+      .catch(err => console.log(err));
   };
 };
 
@@ -113,11 +161,16 @@ export const getInitialProductsFromServer = () => {
 const initialState = {
   products: [],
   lineItems: [],
-  orders: []
+  orders: [],
+  auth: {}
 };
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
+
+    case SET_AUTH:
+      return Object.assign({}, state, { auth: action.auth });
+
     case UPDATE_ORDER:
       const updatedOrders = [...state.orders].filter(
         order => order.id !== action.order.id

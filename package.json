@@ -4,6 +4,7 @@
   "description": "",
   "main": "server.js",
   "dependencies": {
+    "@blueprintjs/core": "^3.7.0",
     "axios": "^0.18.0",
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.5",
@@ -13,8 +14,10 @@
     "body-parser": "^1.18.3",
     "express": "^4.16.3",
     "iconv-lite": "^0.4.24",
+    "jwt-simple": "^0.5.5",
     "pg": "^7.4.3",
     "react": "^16.4.2",
+    "react-addons-css-transition-group": "^15.6.2",
     "react-dom": "^16.4.2",
     "react-redux": "^5.0.7",
     "react-router-dom": "^4.3.1",
@@ -31,12 +34,15 @@
       "react"
     ]
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "css-loader": "^1.0.0",
+    "style-loader": "^0.23.1"
+  },
   "scripts": {
     "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "webpack": "./node_modules/webpack/bin/webpack.js",
-    "start:dev": "npm run webpack -- --watch --mode=development & DATABASE_URL=postgres://localhost/acme-store nodemon server.js --ignore src/ --ignore dist"
+    "start:dev": "npm run webpack -- --watch --mode=development & DATABASE_URL=postgres://localhost/acme-store JWT_SECRET=lala nodemon server.js --ignore src/ --ignore dist"
   },
   "keywords": [],
   "author": "",

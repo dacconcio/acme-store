@@ -1,6 +1,23 @@
 const Sequalize = require('sequelize');
 const db = new Sequalize(process.env.DATABASE_URL);
 
+const User = db.define('user', {
+  name: {
+    type: db.Sequelize.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: true
+    }
+  },
+  password: {
+    type: db.Sequelize.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: true
+    }
+  }
+});
+
 const Product = db.define('product', {
   name: {
     type: db.Sequelize.STRING,
@@ -44,10 +61,21 @@ db.sync({ force: true }).then(() => {
   const bar = Product.create({
     name: 'bar'
   });
+
+  const dave = User.create({
+    name: 'dave',
+    password: 'DAVE'
+  });
+
+  const yinglu = User.create({
+    name: 'yinglu',
+    password: 'YINGLU'
+  });
 });
 
 module.exports = {
   Product,
   Order,
-  LineItem
+  LineItem,
+  User
 };
