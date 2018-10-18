@@ -46,6 +46,8 @@ const Nav = props => {
             text="Logout"
             disabled={props.auth.id ? false : true}
           />
+          <Navbar.Heading>    TOTAL SALES: </Navbar.Heading>
+ 
         </Navbar.Group>
       </Navbar>
 

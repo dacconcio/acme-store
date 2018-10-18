@@ -6,7 +6,7 @@ import {
   ControlGroup,
   Button,
   ButtonGroup,
-  Alignment,
+  Alignment
 } from '@blueprintjs/core';
 
 const mapStateToProps = state => {
@@ -28,7 +28,8 @@ class Login extends Component {
 
     this.state = {
       name: '',
-      password: ''
+      password: '',
+      error: false
     };
 
     this.onChange = this.onChange.bind(this);
@@ -42,7 +43,10 @@ class Login extends Component {
 
   login(event) {
     event.preventDefault();
-    this.props.login(this.state)
+    this.props
+      .login(this.state)
+      .then(this.setState({ error: false }))
+      .catch(ex => this.setState({ error: true }));
   }
 
   logout(event) {
@@ -54,7 +58,6 @@ class Login extends Component {
     return (
       <div align="center" className="bp3-callout bp3-intent-primary">
         <h4 className="bp3-heading">Enter your Name and Password</h4>
-
         <br />
         <input onChange={this.onChange} name="name" className="bp3-input" />
         <br />
@@ -69,6 +72,8 @@ class Login extends Component {
         <ButtonGroup large="true">
           <Button onClick={this.login}>Login</Button>
         </ButtonGroup>
+        <br />
+        {this.state.error ? <div> LOGIN ERROR!!! </div> : null}
       </div>
     );
   }

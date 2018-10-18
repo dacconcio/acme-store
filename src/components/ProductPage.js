@@ -27,7 +27,8 @@ const mapStateToProps = state => {
   return {
     products: state.products,
     lineItems: state.lineItems,
-    currentOrder
+    currentOrder,
+    auth: state.auth
   };
 };
 
@@ -49,6 +50,7 @@ class ProductPage extends Component {
   createOrder() {
     const updatedOrder = this.props.currentOrder;
     updatedOrder.status = 'ORDER';
+    updatedOrder.userId = this.props.auth.id;
     this.props.updateOrder(updatedOrder);
   }
 
@@ -73,7 +75,7 @@ class ProductPage extends Component {
   }
 
   decrementProduct(productId) {
-   const productsLineItem = this.props.lineItems.find(lineItem => {
+    const productsLineItem = this.props.lineItems.find(lineItem => {
       return (
         lineItem.productId === productId &&
         lineItem.orderId === this.props.currentOrder.id
@@ -134,8 +136,13 @@ class ProductPage extends Component {
           })}
 
           <br />
-
-          <Button onClick={this.createOrder}> CREATE ORDER </Button>
+          <Button
+            disabled={this.props.auth.id ? false : true}
+            onClick={this.createOrder}
+          >
+            {' '}
+            CREATE ORDER{' '}
+          </Button>
         </div>
       </div>
     );

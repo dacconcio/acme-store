@@ -12,7 +12,19 @@ const DESTROY_LINE_ITEM = 'DESTROY_LINE_ITEM';
 
 const UPDATE_ORDER = 'UPDATE_ORDER';
 
+const GET_COUNT = 'GET_COUNT'
+
 const SET_AUTH = 'SET_AUTH';
+
+
+
+
+
+
+
+
+
+
 
 const setAuth = auth => {
   return {
@@ -74,7 +86,6 @@ export const updateOrder = order => {
       .put(`api/orders/${order.id}`, order)
       .then(response => dispatch(updateOrderOnState(response.data)))
       .then(() => dispatch(getCreateOrders()))
-      .catch(err => console.log(err));
   };
 };
 

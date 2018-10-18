@@ -2,10 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 const mapStateToProps = state => {
-  const nonCartOrders = state.orders.filter(order => order.status !== 'CART');
+  const nonCartOrdersForThisUser = state.orders.filter(order => {
+    return order.status !== 'CART' && order.userId === state.auth.id;
+  });
 
   return {
-    orders: nonCartOrders,
+    orders: nonCartOrdersForThisUser,
     products: state.products
   };
 };

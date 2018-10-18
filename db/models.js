@@ -1,14 +1,17 @@
 const Sequalize = require('sequelize');
 const db = new Sequalize(process.env.DATABASE_URL);
 
-const User = require('./User.js')(db)
-const Product = require('./Product.js')(db)
-const Order = require('./Order.js')(db)
-const LineItem = require('./LineItem.js')(db)
+const User = require('./User.js')(db);
+const Product = require('./Product.js')(db);
+const Order = require('./Order.js')(db);
+const LineItem = require('./LineItem.js')(db);
 
 LineItem.belongsTo(Product);
 LineItem.belongsTo(Order);
 Order.hasMany(LineItem);
+
+Order.belongsTo(User);
+User.hasMany(Order);
 
 db.sync({ force: true }).then(() => {
   const foo = Product.create({

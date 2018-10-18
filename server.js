@@ -12,6 +12,30 @@ app.get('/', (req, res, next) => {
   res.sendFile(path.join(__dirname, 'dist/index.html'));
 });
 
+app.get('/count', (req, res, next) => {
+  return LineItem.findAll({
+    include: [
+      {
+        model: Order,
+        where: { status: 'ORDER' }
+      }
+    ]
+  })
+    .then(lineItems => {
+			console.log(lineItems)
+      return lineItems.reduce((memo, lineItem) => {
+        memo += lineItem.quantity;
+        return memo;
+      }, 0);
+    })
+    .then(count => {
+			console.log(count)
+      res.send({ count });
+    })
+    .catch(next);
+});
+
+
 app.use((req, res, next) => {
   const token = req.headers.authorization;
   if (!token) {
